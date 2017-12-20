@@ -1,0 +1,20 @@
+﻿生成启动时间为 2017/12/20 19:53:13。
+     1>项目“E:\HYX\Develop\HEL\C++\PlumPack\PlumPack\PlumPack.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D PLUMPACK_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt PlumCipherA.cpp PlumCrypt.cpp PlumPack.cpp
+         PlumCipherA.cpp
+         PlumCrypt.cpp
+         PlumPack.cpp
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\HYX\Develop\HEL\C++\PlumPack\Release\PlumPack.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\HYX\Develop\HEL\C++\PlumPack\Release\PlumPack.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\HYX\Develop\HEL\C++\PlumPack\Release\PlumPack.lib" /MACHINE:X86 /SAFESEH /DLL Release\PlumCipherA.obj
+         Release\PlumCrypt.obj
+         Release\PlumPack.obj
+            正在创建库 E:\HYX\Develop\HEL\C++\PlumPack\Release\PlumPack.lib 和对象 E:\HYX\Develop\HEL\C++\PlumPack\Release\PlumPack.exp
+         正在生成代码
+         已完成代码的生成
+         PlumPack.vcxproj -> E:\HYX\Develop\HEL\C++\PlumPack\Release\PlumPack.dll
+     1>已完成生成项目“E:\HYX\Develop\HEL\C++\PlumPack\PlumPack\PlumPack.vcxproj”(Rebuild 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.26
