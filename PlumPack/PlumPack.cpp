@@ -6,8 +6,9 @@
 * @file		PlumPack.cpp
 * @brief	This Program is PlumPack DLL Project.
 * @author	Alopex/Helium
-* @version	v1.00a
+* @version	v1.01a
 * @date		2017-12-16	v1.00a	alopex	Create Project
+* @date		2017-12-23	v1.01a	alopex	Add Function UnPack to Memory
 */
 #include "PlumPack.h"
 
@@ -22,6 +23,8 @@
 //------------------------------------------------------------------
 CPlumPack::CPlumPack()
 {
+	m_pCryptArr = NULL;
+	m_nArrSize = 0;
 }
 
 //------------------------------------------------------------------
@@ -33,6 +36,21 @@ CPlumPack::CPlumPack()
 //------------------------------------------------------------------
 CPlumPack::~CPlumPack()
 {
+	SAFE_DELETE_ARRAY(m_pCryptArr);
+}
+
+//-----------------------------------------------------------------------------
+// @Function:	 PlumGetArray(CPlumCrypt** ppCryptArr, int* pArrSize) const
+// @Purpose: CPlumPack访问
+// @Since: v1.00a
+// @Para: CPlumCrypt** ppCryptArr
+// @Para: int* pArrSize
+// @Return: None
+//-----------------------------------------------------------------------------
+void CPlumPack::PlumGetArray(CPlumCrypt** ppCryptArr, int* pArrSize) const
+{
+	*ppCryptArr = m_pCryptArr;
+	*pArrSize = m_nArrSize;
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +179,6 @@ void CPlumPack::PlumPackFileA(const char* pSrcArr[], int nArrSize, const char* p
 		unsigned char* pDestArr = NULL;
 		int nSrcSize = CRYPTARRAYSIZE;
 		int nDestSize = CRYPTARRAYSIZE;
-		int nReadSize = 0;
-		int nWriteSize = 0;
 		DWORD dwRealRead = 0;
 		DWORD dwRealWrite = 0;
 
@@ -205,7 +221,7 @@ void CPlumPack::PlumPackFileA(const char* pSrcArr[], int nArrSize, const char* p
 
 //-----------------------------------------------------------------------------
 // @Function:	 PlumUnPackFile(const char* pSrc, char* pDest)
-// @Purpose: CPlumPack解包函数
+// @Purpose: CPlumPack解包函数(解包存储到文件)
 // @Since: v1.00a
 // @Para: const char* pSrc				//解包源文件名
 // @Para: char* pDest					//解包目标文件路径(不是文件名称!)
@@ -238,7 +254,6 @@ void CPlumPack::PlumUnPackFileA(const char* pSrc, const char* pDest)
 	//存储各个文件偏移地址
 	char* pDestFileName = NULL;
 	DWORD* pFileAddress = NULL;
-	DWORD dwAddressNow = 0;
 	DWORD dwFileReadSize = 0;
 
 	pFileAddress = new DWORD[nFileAllNum];
@@ -267,21 +282,90 @@ void CPlumPack::PlumUnPackFileA(const char* pSrc, const char* pDest)
 		memcpy(pDestFileName, pDest, nDestSize);
 		memcpy(pDestFileName + nDestSize, sMsg.cFileName, nFileNameSize);
 
-		dwAddressNow = SetFilePointer(hFileSrc, NULL, NULL, FILE_CURRENT);
-
 		pArray = new char[dwFileReadSize];
 		ReadFile(hFileSrc, pArray, dwFileReadSize, &dwRealReadPackMsg, NULL);
-
-		dwAddressNow = SetFilePointer(hFileSrc, NULL, NULL, FILE_CURRENT);
 
 		//解包文件
 		CPlumCrypt* pCrypt = new CPlumCrypt;
 
-		pCrypt->PlumDeCryptFileInMemoryStoreInFileExA((const void*)dwAddressNow, sMsg, pDestFileName);
+		pCrypt->PlumDeCryptFileInMemoryStoreInFileExA((const void*)pArray, sMsg, pDestFileName);
 
 		delete[] pDestFileName;
 		delete[] pArray;
 		delete pCrypt;
+	}
+
+
+	delete[] pFileAddress;
+
+	CloseHandle(hFileSrc);
+}
+
+//----------------------------------------------------------------------------------
+// @Function:	 PlumUnPackFile(const char* pSrc)
+// @Purpose: CPlumPack解包函数(解包存储到内存)
+// @Since: v1.00a
+// @Para: const char* pSrc				//解包源文件名
+// @Return: None
+//----------------------------------------------------------------------------------
+void CPlumPack::PlumUnPackFileA(const char* pSrc)
+{
+	HANDLE hFileSrc;
+
+	//打开源文件
+	hFileSrc = CreateFileA(pSrc, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (hFileSrc == INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hFileSrc);
+		return;
+	}
+
+	//分析封包信息
+	PlumPackInfo sPackMsg;
+	int	nFileAllNum;
+	DWORD dwRealReadPackMsg;
+
+	ReadFile(hFileSrc, &sPackMsg, sizeof(sPackMsg), &dwRealReadPackMsg, NULL);
+	if (dwRealReadPackMsg == 0) return;
+
+	nFileAllNum = sPackMsg.dwFileAllNum;//封包文件总数
+	if (nFileAllNum == 0) return;
+
+	//存储解包文件地址数量
+	m_nArrSize = nFileAllNum;
+	m_pCryptArr = new CPlumCrypt[m_nArrSize];
+
+	//存储各个文件偏移地址
+	char* pDestFileName = NULL;
+	DWORD* pFileAddress = NULL;
+	DWORD dwFileReadSize = 0;
+
+	pFileAddress = new DWORD[nFileAllNum];
+	for (int i = 0; i < nFileAllNum; ++i)
+	{
+		ReadFile(hFileSrc, (pFileAddress + i), sizeof(DWORD), &dwRealReadPackMsg, NULL);
+	}
+
+	//循环读取
+	for (int i = 0; i < nFileAllNum; ++i)
+	{
+		//设置解包文件地址
+		SetFilePointer(hFileSrc, *(pFileAddress + i), NULL, FILE_BEGIN);
+
+		//分析文件信息
+		PlumFileInfo sMsg;
+		char* pArray = NULL;
+		ReadFile(hFileSrc, &sMsg, sizeof(sMsg), &dwRealReadPackMsg, NULL);
+		dwFileReadSize = sMsg.dwCryptFileSize;
+		pArray = new char[dwFileReadSize];
+		ReadFile(hFileSrc, pArray, dwFileReadSize, &dwRealReadPackMsg, NULL);
+
+		//解包文件
+		(m_pCryptArr + i)->PlumDeCryptFileInMemoryStoreInMemoryExA((const void*)pArray, sMsg);
+
+		delete[] pDestFileName;
+		delete[] pArray;
 	}
 
 

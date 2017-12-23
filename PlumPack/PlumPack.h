@@ -6,8 +6,9 @@
 * @file		PlumPack.h
 * @brief	This Program is PlumPack DLL Project.
 * @author	Alopex/Helium
-* @version	v1.00a
+* @version	v1.01a
 * @date		2017-12-16	v1.00a	alopex	Create Project
+* @date		2017-12-23	v1.01a	alopex	Add Function UnPack to Memory
 */
 #pragma once
 
@@ -44,14 +45,21 @@ typedef struct
 class PLUMPACK_API CPlumPack
 {
 private:
+	CPlumCrypt* m_pCryptArr;
+	int m_nArrSize;
 
 
 public:
 	CPlumPack();
 	virtual ~CPlumPack();
 
+	//访问
+	virtual void PlumGetArray(CPlumCrypt** ppCryptArr, int* pArrSize) const;
+
+	//AES Pack(AES封包/解包)
 	virtual void PlumPackFileA(const char* pSrcArr[], int nArrSize, const char* pDest);
 	virtual void PlumUnPackFileA(const char* pSrc, const char* pDest);
+	virtual void PlumUnPackFileA(const char* pSrc);
 };
 
 #endif
