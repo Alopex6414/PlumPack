@@ -67,6 +67,7 @@ public:
 	virtual void PlumDeCryptFileA(const char* pSrc, const char* pDest, DWORD* pLuckyArr);
 	virtual void PlumEnCryptFileExA(const char* pSrc, const char* pDest, DWORD* pLuckyArr);
 	virtual void PlumDeCryptFileExA(const char* pSrc, const char* pDest);
+	virtual void PlumDeCryptFileNoExA(const char* pSrc, const char* pDest);
 	//Memory(ÄÚ´æ)
 	virtual void PlumEnCryptFileExtractFromMemoryExA(const char* pDest, DWORD* pLuckyArr);
 	virtual void PlumDeCryptFileStoreInMemoryExA(const char* pSrc);

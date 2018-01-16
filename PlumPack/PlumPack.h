@@ -6,9 +6,10 @@
 * @file		PlumPack.h
 * @brief	This Program is PlumPack DLL Project.
 * @author	Alopex/Helium
-* @version	v1.01a
-* @date		2017-12-16	v1.00a	alopex	Create Project
-* @date		2017-12-23	v1.01a	alopex	Add Function UnPack to Memory
+* @version	v1.02a
+* @date		2017-12-16	v1.00a	alopex	Create Project.
+* @date		2017-12-23	v1.01a	alopex	Add Function UnPack to Memory.
+* @date		2018-1-16	v1.02a	alopex	Add For PackerMaker Function.
 */
 #pragma once
 
@@ -58,8 +59,14 @@ public:
 
 	//AES Pack(AES·â°ü/½â°ü)
 	virtual void PlumPackFileA(const char* pSrcArr[], int nArrSize, const char* pDest);
+	virtual void PlumPackFileA(const char* pSrcArr[], int nArrSize, const char* pDest, DWORD* pLuckyArr);
 	virtual void PlumUnPackFileA(const char* pSrc, const char* pDest);
 	virtual void PlumUnPackFileA(const char* pSrc);
+
+	//AES Packer(PackerMaker)
+	virtual void PlumPackFilePackerA(const char* pSrcArr[], int nArrSize, const char* pDest, int* pCount);
+	virtual void PlumPackFilePackerA(const char* pSrcArr[], int nArrSize, const char* pDest, DWORD* pLuckyArr, int* pCount);
+	virtual void PlumUnPackFilePackerA(const char* pSrc, const char* pDest, int* pSize, int* pCount);
 };
 
 #endif
