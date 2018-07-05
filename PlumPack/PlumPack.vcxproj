@@ -84,11 +84,15 @@
     <ClInclude Include="PlumCipherA.h" />
     <ClInclude Include="PlumCrypt.h" />
     <ClInclude Include="PlumPack.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PlumCipherA.cpp" />
     <ClCompile Include="PlumCrypt.cpp" />
     <ClCompile Include="PlumPack.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PlumPack.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
